@@ -1,0 +1,75 @@
+{
+  "name": "project-context-manager",
+  "version": "1.1.0",
+  "description": "Track large multi-language projects with secure credential storage, session resumption, phase-based chunking, and plan mode integration",
+  "author": {
+    "name": "QENEX Infrastructure Team",
+    "email": "ceo@qenex.ai"
+  },
+  "repository": "https://github.com/qenex-ai/project-context-manager",
+  "license": "MIT",
+  "keywords": [
+    "project-management",
+    "context",
+    "multi-language",
+    "polyglot",
+    "security",
+    "credentials",
+    "session",
+    "resume",
+    "chunking",
+    "navigation",
+    "plan-mode",
+    "git",
+    "repository",
+    "version-control"
+  ],
+  "commands": {
+    "store-credential": {
+      "file": "commands/store-credential.yaml",
+      "description": "Securely store credentials in system keychain"
+    },
+    "get-credential": {
+      "file": "commands/get-credential.yaml",
+      "description": "Retrieve stored credentials from system keychain"
+    },
+    "list-credentials": {
+      "file": "commands/list-credentials.yaml",
+      "description": "List all stored credentials for current or global scope"
+    }
+  },
+  "skills": {
+    "secure-credential-handling": {
+      "file": "skills/secure-credential-handling/SKILL.md",
+      "description": "Comprehensive guidance for secure credential storage and leak prevention"
+    },
+    "session-management": {
+      "file": "skills/session-management/SKILL.md",
+      "description": "Session state tracking and resumption"
+    },
+    "chunk-navigation": {
+      "file": "skills/chunk-navigation/SKILL.md",
+      "description": "Phase-based project navigation"
+    },
+    "project-indexing": {
+      "file": "skills/project-indexing/SKILL.md",
+      "description": "Multi-language project indexing"
+    }
+  },
+  "dependencies": {
+    "bash": ">=4.0",
+    "git": ">=2.0"
+  },
+  "os_requirements": {
+    "macos": {
+      "keychain": "required"
+    },
+    "linux": {
+      "secret-tool": "recommended",
+      "openssl": "fallback"
+    },
+    "windows": {
+      "cmdkey": "required"
+    }
+  }
+}
