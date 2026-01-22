@@ -1,0 +1,26 @@
+{
+  "name": "project-context-manager",
+  "version": "1.0.0",
+  "description": "Track large multi-language projects with secure credential storage, session resumption, phase-based chunking, and plan mode integration",
+  "author": {
+    "name": "QENEX Infrastructure Team",
+    "email": "ceo@qenex.ai"
+  },
+  "keywords": [
+    "project-management",
+    "context",
+    "multi-language",
+    "polyglot",
+    "security",
+    "credentials",
+    "session",
+    "resume",
+    "chunking",
+    "navigation",
+    "plan-mode",
+    "git",
+    "repository",
+    "version-control"
+  ],
+  "license": "MIT"
+}

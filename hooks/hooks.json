@@ -1,0 +1,41 @@
+{
+  "description": "Project Context Manager hooks for session management, state preservation, and credential leak prevention",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/save-state.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are a credential leak prevention system. Analyze the tool use for potential credential exposure.\n\nCheck for these patterns in $TOOL_INPUT:\n1. **API keys/tokens**: Patterns like 'sk-...', 'ghp_...', long alphanumeric strings (>20 chars)\n2. **Private keys**: BEGIN RSA/OPENSSH/PGP PRIVATE KEY blocks\n3. **Passwords**: password=, PASSWORD=, pwd= followed by values\n4. **Credentials in files**: Writing to .env, credentials.json, secrets.yaml\n5. **Hardcoded secrets**: Assignment statements with suspicious values\n6. **Database credentials**: Connection strings with passwords\n\n**Analysis:**\n- If $TOOL_NAME is 'Write' or 'Edit': Check file_path and new_string/content for patterns\n- If $TOOL_NAME is 'Bash': Check command for exposed credentials\n- Ignore test files, example files, and fixture directories\n- Ignore commented-out code\n\n**Response format:**\n```json\n{\n  \"hookSpecificOutput\": {\n    \"permissionDecision\": \"allow|deny|ask\"\n  },\n  \"systemMessage\": \"Explanation for Claude\"\n}\n```\n\n**Return:**\n- \"allow\" if no credential patterns detected\n- \"deny\" with explanation if clear credential exposure found\n- \"ask\" if suspicious but not certain (let Claude decide)\n\n**Examples of DENY:**\n- File write to production.env with API_KEY=sk-...\n- Bash command with password in cleartext: curl -u admin:password123\n- Edit adding hardcoded token: TOKEN = \"ghp_abc123def456\"\n\n**Examples of ALLOW:**\n- Comments about credentials\n- Variable names without values: API_KEY=$API_KEY\n- Credential retrieval: /get-credential github-api\n- Test fixtures with fake credentials\n\nAnalyze now:",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

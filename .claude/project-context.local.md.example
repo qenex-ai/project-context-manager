@@ -1,0 +1,144 @@
+---
+# Project Context Manager Configuration
+# Copy this file to your project root as .claude/project-context.local.md
+# This file is git-ignored by default to protect project-specific settings
+
+# Active projects (automatically managed by plugin)
+active_projects:
+  - path: /home/user/project1
+    last_session: 2024-01-22T10:30:00Z
+    current_phase: "Phase 3: API Integration"
+  - path: /home/user/project2
+    last_session: 2024-01-21T15:45:00Z
+    current_phase: "Phase 1: Setup"
+
+# Chunking preferences
+chunk_strategy: "phase-based"  # Options: phase-based, module-based, file-based
+auto_chunk: true               # Automatically create chunks on project index
+chunk_context_lines: 50        # Lines of context to show around chunks
+
+# Indexing behavior
+auto_index_on_switch: true     # Re-index when switching projects
+auto_index_on_changes: true    # Re-index when significant file changes detected
+index_ignore_patterns:
+  - "node_modules"
+  - ".git"
+  - "venv"
+  - "__pycache__"
+  - "dist"
+  - "build"
+  - "target/debug"
+  - "target/release"
+  - ".next"
+  - ".nuxt"
+  - "vendor"
+
+# Security settings
+credential_vault_path: ".claude/.credentials.enc"
+leak_prevention_enabled: true  # Enable PreToolUse hook for credential scanning
+scan_git_commits: true         # Scan commits for credentials before pushing
+scan_bash_commands: true       # Scan bash commands for exposed secrets
+scan_file_writes: true         # Scan file writes for credential patterns
+
+# Leak prevention ignore patterns (for test fixtures, examples)
+leak_prevention_ignore:
+  - "tests/fixtures/"
+  - "examples/"
+  - "*_test.py"
+  - "*_spec.rb"
+  - "*.test.js"
+  - "*.test.ts"
+  - "mock_*.py"
+
+# Session management
+auto_resume_on_start: true     # Automatically show resume prompt on SessionStart
+save_state_on_stop: true       # Auto-save state when session ends
+max_session_history: 30        # Keep last N sessions in history
+checkpoint_interval: 15        # Minutes between automatic checkpoints
+
+# Plan mode integration
+auto_chunk_plans: true         # Automatically create chunks from plan phases
+track_plan_progress: true      # Track task completion in plan files
+generate_plans_from_index: true # Generate plan templates from project index
+
+# Navigation preferences
+show_dependencies_on_navigate: true  # Show imports/dependencies when navigating
+load_files_on_navigate: 3            # Number of files to load automatically
+syntax_highlighting: true            # Enable syntax highlighting in summaries
+
+# Git integration
+auto_commit_on_phase_complete: false  # Auto-commit when phase marked complete
+commit_message_template: "feat: {phase_name} - {completion_percentage}% complete"
+require_tests_for_commit: false       # Block commits without passing tests
+auto_push_on_commit: false            # Automatically push commits
+
+# Language-specific settings
+language_preferences:
+  python:
+    test_framework: "pytest"
+    linter: "ruff"
+    formatter: "black"
+  rust:
+    test_command: "cargo test"
+    linter: "clippy"
+    formatter: "rustfmt"
+  javascript:
+    test_framework: "jest"
+    linter: "eslint"
+    formatter: "prettier"
+  go:
+    test_command: "go test ./..."
+    linter: "golangci-lint"
+    formatter: "gofmt"
+
+# Notification preferences
+notify_on_index_complete: true
+notify_on_checkpoint_created: false  # Silent checkpoints
+notify_on_credential_stored: true
+notify_on_chunk_created: true
+
+# Performance tuning
+max_files_per_chunk: 100        # Maximum files in a single chunk
+max_index_files: 50000          # Maximum files to index (safety limit)
+parallel_indexing: true         # Use parallel processing for indexing
+cache_index_results: true       # Cache index results for faster access
+
+# Advanced options
+enable_telemetry: false         # Send anonymous usage statistics
+debug_mode: false               # Enable verbose logging
+strict_validation: false        # Strict validation of all operations
+
+---
+
+# Project-Specific Notes
+
+This configuration file is specific to your project. Add project-specific notes here:
+
+## Credentials Required
+
+List credentials needed for this project:
+- github-api: GitHub API token for CI/CD
+- deploy-key: SSH key for production deployment
+- stripe-api: Stripe API key for payment processing
+
+## Custom Workflow
+
+Document project-specific workflows:
+1. Run `/index-project` after cloning
+2. Store credentials: `/store-credential --name github-api --type api-key`
+3. Create chunks: `/chunk --create`
+4. Start work: `/navigate --phase "Setup"`
+
+## Team Conventions
+
+- Use phase-based chunking for this project
+- Checkpoint every major feature completion
+- Always run tests before phase completion
+- Store all API credentials in keychain (never hardcode)
+
+## Special Considerations
+
+- This is a polyglot project (Python + Rust + Go)
+- Trading algorithms require <500µs latency
+- All credentials must be encrypted
+- Zero downtime deployments required

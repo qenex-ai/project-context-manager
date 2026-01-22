@@ -1,0 +1,383 @@
+# Genius Recommendations Addon for /evaluate Command
+
+## Add this section after Step 8 in evaluate.md
+
+##### Step 9: Genius-Level Recommendations
+
+```bash
+echo "═══════════════════════════════════════════════"
+echo "  💡 Genius Recommendations"
+echo "═══════════════════════════════════════════════"
+echo ""
+
+# Pattern Recognition & Architecture Insights
+echo "🏗️  Architecture Patterns:"
+echo ""
+
+# Detect anti-patterns
+if grep -rq "god.*class\|manager.*class" --include="*.py" "$PROJECT_ROOT"; then
+  echo "  ⚠️  Detected God Object pattern"
+  echo "      → Refactor using: Single Responsibility Principle"
+  echo "      → Split into: [Domain]Service, [Domain]Repository, [Domain]Validator"
+  echo "      → Example: UserManager → UserService + UserRepository + UserValidator"
+  echo ""
+fi
+
+# Detect coupling issues
+IMPORT_COUNT=$(grep -r "^from \|^import " --include="*.py" "$PROJECT_ROOT" | wc -l)
+FILE_COUNT=$(find "$PROJECT_ROOT" -name "*.py" | wc -l)
+if [ "$FILE_COUNT" -gt 0 ]; then
+  IMPORTS_PER_FILE=$((IMPORT_COUNT / FILE_COUNT))
+  if [ "$IMPORTS_PER_FILE" -gt 10 ]; then
+    echo "  ⚠️  High coupling detected (avg $IMPORTS_PER_FILE imports/file)"
+    echo "      → Apply: Dependency Inversion Principle"
+    echo "      → Pattern: Introduce interfaces/abstractions"
+    echo "      → Tool: Create dependency injection container"
+    echo ""
+  fi
+fi
+
+# Suggest architectural improvements
+echo "  ✨ Suggested patterns for this phase:"
+if echo "$CHUNK_NAME" | grep -iq "api\|endpoint"; then
+  echo "      → Controller-Service-Repository pattern"
+  echo "      → Middleware pipeline for cross-cutting concerns"
+  echo "      → DTOs for request/response validation"
+elif echo "$CHUNK_NAME" | grep -iq "database\|model"; then
+  echo "      → Repository pattern for data access"
+  echo "      → Unit of Work pattern for transactions"
+  echo "      → Query objects for complex queries"
+elif echo "$CHUNK_NAME" | grep -iq "auth"; then
+  echo "      → Strategy pattern for auth providers (JWT, OAuth, API key)"
+  echo "      → Decorator pattern for permission checks"
+  echo "      → Chain of Responsibility for middleware"
+fi
+echo ""
+
+# Performance Optimization Insights
+echo "🚀 Performance Optimizations:"
+echo ""
+
+# Check for N+1 queries
+if grep -rq "for.*in.*:" --include="*.py" "$PROJECT_ROOT"; then
+  if grep -rq "\.get\|\.filter\|SELECT" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  ⚠️  Potential N+1 query pattern detected"
+    echo "      → Solution: Use select_related() / prefetch_related() (Django)"
+    echo "      → Solution: Use JOIN queries instead of nested loops"
+    echo "      → Tool: Enable SQL query logging to verify"
+    echo "      → Benchmark: Profile with py-spy or cProfile"
+    echo ""
+  fi
+fi
+
+# Check for missing indexes
+if grep -rq "WHERE\|ORDER BY" --include="*.sql" --include="*.py" "$PROJECT_ROOT"; then
+  echo "  💡 Database query optimization opportunities:"
+  echo "      → Add indexes on frequently queried columns"
+  echo "      → Use composite indexes for multi-column filters"
+  echo "      → Command: python manage.py sqlmigrate <app> <migration>"
+  echo "      → Monitor: Enable query logging, check EXPLAIN ANALYZE"
+  echo ""
+fi
+
+# Check for caching opportunities
+if ! grep -rq "cache\|Cache\|memoize" --include="*.py" "$PROJECT_ROOT"; then
+  echo "  💡 Caching strategy needed:"
+  echo "      → Level 1: Function-level memoization (@lru_cache)"
+  echo "      → Level 2: Application caching (Redis, Memcached)"
+  echo "      → Level 3: HTTP caching (ETag, Cache-Control headers)"
+  echo "      → Tool: django-cacheops, Flask-Caching, or functools.lru_cache"
+  echo ""
+fi
+
+# Async opportunities
+if grep -rq "requests\.\|urllib" --include="*.py" "$PROJECT_ROOT"; then
+  if ! grep -rq "async\|await\|asyncio" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  💡 Async/await opportunity for I/O-bound operations:"
+    echo "      → Migrate: requests → httpx (async HTTP)"
+    echo "      → Pattern: Use asyncio.gather() for parallel requests"
+    echo "      → Expected: 5-10x improvement for I/O-bound tasks"
+    echo "      → Example: async def fetch_data() / await fetch_data()"
+    echo ""
+  fi
+fi
+
+# Security Best Practices
+echo "🔒 Security Enhancements:"
+echo ""
+
+# Check for security headers
+if grep -rq "Flask\|fastapi\|@app.route" --include="*.py" "$PROJECT_ROOT"; then
+  if ! grep -rq "X-Frame-Options\|Content-Security-Policy\|Strict-Transport-Security" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  ⚠️  Missing security headers"
+    echo "      → Add: X-Frame-Options: DENY"
+    echo "      → Add: Content-Security-Policy: default-src 'self'"
+    echo "      → Add: Strict-Transport-Security: max-age=31536000"
+    echo "      → Tool: Flask-Talisman, secure.py middleware"
+    echo ""
+  fi
+fi
+
+# Check for input validation
+if grep -rq "request\.args\|request\.form\|request\.json" --include="*.py" "$PROJECT_ROOT"; then
+  if ! grep -rq "marshmallow\|pydantic\|validator" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  ⚠️  Input validation needed"
+    echo "      → Library: Pydantic (type-safe validation)"
+    echo "      → Library: Marshmallow (schema validation)"
+    echo "      → Pattern: Validate early, fail fast"
+    echo "      → Example: @app.post('/api', response_model=ResponseSchema)"
+    echo ""
+  fi
+fi
+
+# Check for rate limiting
+if grep -rq "@app.route\|@api" --include="*.py" "$PROJECT_ROOT"; then
+  if ! grep -rq "limiter\|RateLimiter\|rate_limit" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  💡 Add rate limiting for API protection:"
+    echo "      → Library: Flask-Limiter, slowapi (FastAPI)"
+    echo "      → Strategy: 100 requests/hour per user, 1000/hour per IP"
+    echo "      → Storage: Redis for distributed rate limiting"
+    echo "      → Fallback: In-memory for development"
+    echo ""
+  fi
+fi
+
+# Testing Strategies
+echo "🧪 Testing Improvements:"
+echo ""
+
+# Property-based testing
+if [ "$TEST_COUNT" -gt 0 ]; then
+  if ! grep -rq "hypothesis\|@given" --include="*.py" "$PROJECT_ROOT"; then
+    echo "  💡 Upgrade to property-based testing:"
+    echo "      → Library: Hypothesis (Python), proptest (Rust)"
+    echo "      → Benefit: Discovers edge cases traditional tests miss"
+    echo "      → Example: @given(st.integers()) def test_absolute(n)"
+    echo "      → Use case: Data validation, parsing, math operations"
+    echo ""
+  fi
+fi
+
+# Mutation testing
+if ! grep -rq "mutmut\|mutpy" --include="*.py" "$PROJECT_ROOT"; then
+  echo "  💡 Verify test quality with mutation testing:"
+  echo "      → Tool: mutmut (Python), cargo-mutants (Rust)"
+  echo "      → Purpose: Ensure tests actually catch bugs"
+  echo "      → Command: mutmut run"
+  echo "      → Target: >80% mutation kill rate"
+  echo ""
+fi
+
+# Contract testing for APIs
+if grep -rq "@app.route\|@api" --include="*.py" "$PROJECT_ROOT"; then
+  echo "  💡 Add API contract testing:"
+  echo "      → Tool: Pact (consumer-driven contracts)"
+  echo "      → Tool: Dredd (API blueprint testing)"
+  echo "      → Pattern: Generate OpenAPI spec, validate against it"
+  echo "      → Benefit: Catch breaking changes before deployment"
+  echo ""
+fi
+
+# Refactoring Suggestions
+echo "♻️  Refactoring Opportunities:"
+echo ""
+
+# Long functions
+LONG_FUNCS=$(grep -rn "^def \|^fn " --include="*.py" --include="*.rs" "$PROJECT_ROOT" | \
+  while read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    func_line=$(echo "$line" | cut -d: -f2)
+    # Count lines until next function
+    lines=$(tail -n +$func_line "$file" | grep -n "^def \|^fn " | head -1 | cut -d: -f1)
+    [ -n "$lines" ] && [ "$lines" -gt 100 ] && echo "$file:$func_line ($lines lines)"
+  done | head -3)
+
+if [ -n "$LONG_FUNCS" ]; then
+  echo "  ⚠️  Functions exceeding 100 lines detected:"
+  echo "$LONG_FUNCS" | sed 's/^/      /'
+  echo "      → Refactor: Extract Method pattern"
+  echo "      → Target: <50 lines per function"
+  echo "      → Tool: Automated refactoring in PyCharm/VS Code"
+  echo ""
+fi
+
+# Code duplication
+if command -v jscpd &> /dev/null; then
+  DUPLICATION=$(jscpd "$PROJECT_ROOT" --reporters json 2>/dev/null | jq -r '.statistics.total.percentage // "0"')
+  if (( $(echo "$DUPLICATION > 5" | bc -l) )); then
+    echo "  ⚠️  Code duplication: ${DUPLICATION}% (target: <5%)"
+    echo "      → Tool: jscpd, PMD CPD"
+    echo "      → Refactor: Extract common logic to utilities"
+    echo "      → Pattern: DRY principle - Don't Repeat Yourself"
+    echo ""
+  fi
+fi
+
+# Cyclomatic complexity
+if command -v radon &> /dev/null; then
+  COMPLEX=$(radon cc "$PROJECT_ROOT" -a -s | grep -E "C|D|E|F" | head -3)
+  if [ -n "$COMPLEX" ]; then
+    echo "  ⚠️  High cyclomatic complexity detected:"
+    echo "$COMPLEX" | sed 's/^/      /'
+    echo "      → Refactor: Replace nested if/else with guard clauses"
+    echo "      → Refactor: Extract complex conditions to named functions"
+    echo "      → Target: Complexity <10 per function"
+    echo ""
+  fi
+fi
+
+# Tool Recommendations
+echo "🛠️  Recommended Tools:"
+echo ""
+
+echo "  Development:"
+echo "      → pre-commit: Automated code quality checks"
+echo "      → black/ruff: Auto-formatting and linting (Python)"
+echo "      → rustfmt/clippy: Formatting and linting (Rust)"
+echo "      → husky: Git hooks for commit validation"
+echo ""
+
+echo "  Monitoring:"
+echo "      → Sentry: Error tracking and performance monitoring"
+echo "      → Prometheus + Grafana: Metrics and alerting"
+echo "      → OpenTelemetry: Distributed tracing"
+echo "      → New Relic / Datadog: APM"
+echo ""
+
+echo "  Security:"
+echo "      → Bandit: Python security linter"
+echo "      → Safety: Dependency vulnerability scanning"
+echo "      → Semgrep: SAST (Static Application Security Testing)"
+echo "      → Dependabot: Automated dependency updates"
+echo ""
+
+# Learning Resources
+echo "📚 Learning Resources:"
+echo ""
+
+if echo "$CHUNK_NAME" | grep -iq "api"; then
+  echo "  API Design:"
+  echo "      → Book: 'REST API Design Rulebook' by Masse"
+  echo "      → Doc: https://restfulapi.net/"
+  echo "      → Pattern: Richardson Maturity Model"
+  echo ""
+fi
+
+if echo "$CHUNK_NAME" | grep -iq "test"; then
+  echo "  Testing:"
+  echo "      → Book: 'Unit Testing Principles' by Khorikov"
+  echo "      → Article: Google Testing Blog - testing-on-the-toilet"
+  echo "      → Pattern: Arrange-Act-Assert (AAA)"
+  echo ""
+fi
+
+if echo "$CHUNK_NAME" | grep -iq "performance"; then
+  echo "  Performance:"
+  echo "      → Book: 'High Performance Python' by Gorelick"
+  echo "      → Tool: py-spy (sampling profiler)"
+  echo "      → Pattern: Profile first, optimize second"
+  echo ""
+fi
+
+# Phase-Specific Genius Recommendations
+echo ""
+echo "🎯 Phase-Specific Genius Move:"
+echo ""
+
+# Contextual brilliance based on phase
+if echo "$CHUNK_NAME" | grep -iq "auth"; then
+  cat <<EOF
+  Instead of rolling your own auth (risky):
+  → Use: django-allauth, Flask-Security-Too, or Authlib
+  → Add: Social auth (Google, GitHub) for free
+  → Implement: Passwordless magic links (better UX)
+  → Enable: 2FA with pyotp + qrcode libraries
+  → Result: Production-grade auth in 1 day vs 2 weeks
+
+  Genius pattern: Auth0 integration
+    Cost: Free tier covers 7,000 users
+    Gain: Enterprise-grade security without maintenance
+    Code: 30 lines vs 3,000 lines custom implementation
+EOF
+
+elif echo "$CHUNK_NAME" | grep -iq "api"; then
+  cat <<EOF
+  Instead of manual API versioning:
+  → Pattern: Header-based versioning (Accept: application/vnd.api.v2+json)
+  → Tool: FastAPI automatic OpenAPI generation
+  → Add: API rate limiting + circuit breakers
+  → Enable: GraphQL alongside REST (best of both)
+  → Result: Flexible, self-documenting, scalable API
+
+  Genius move: API Gateway pattern
+    Use: Kong, Tyk, or AWS API Gateway
+    Gain: Rate limiting, auth, monitoring, caching centralized
+    Deploy: Once, benefits every endpoint
+EOF
+
+elif echo "$CHUNK_NAME" | grep -iq "database\|model"; then
+  cat <<EOF
+  Instead of active record pattern:
+  → Use: Repository pattern + Query objects
+  → Add: Read replicas for scalability
+  → Implement: CQRS (Command Query Responsibility Segregation)
+  → Enable: Event sourcing for audit trail
+  → Result: 10x scalability, easier testing
+
+  Genius optimization: Connection pooling
+    Tool: PgBouncer (PostgreSQL), ProxySQL (MySQL)
+    Gain: 100 connections → 10,000 concurrent users
+    Cost: 5 minute setup, massive performance gain
+EOF
+
+elif echo "$CHUNK_NAME" | grep -iq "test"; then
+  cat <<EOF
+  Instead of traditional unit tests only:
+  → Add: Property-based testing (Hypothesis)
+  → Add: Contract testing (Pact) for APIs
+  → Add: Visual regression testing (Percy, Chromatic)
+  → Add: Chaos engineering (toxiproxy)
+  → Result: Catch bugs traditional testing misses
+
+  Genius strategy: Testing Trophy (not Pyramid)
+    Focus: Integration tests (70%) > Unit (20%) > E2E (10%)
+    Benefit: Better ROI, catches real issues
+    Tool: pytest-docker for integration test fixtures
+EOF
+
+elif echo "$CHUNK_NAME" | grep -iq "deploy\|ci"; then
+  cat <<EOF
+  Instead of manual deployment:
+  → Pattern: GitOps (Flux, ArgoCD)
+  → Add: Blue-green deployment for zero downtime
+  → Add: Feature flags (LaunchDarkly, Unleash)
+  → Add: Canary releases (progressive rollout)
+  → Result: Deploy 10x/day safely vs 1x/month nervously
+
+  Genius move: Preview environments
+    Tool: Vercel, Netlify, or Kubernetes namespaces
+    Gain: Every PR gets isolated environment
+    Benefit: Test before merge, show stakeholders
+EOF
+fi
+
+echo ""
+```
+
+## Integration Instructions
+
+Add this section between the current Step 8 (Calculate Score) and Step 9 (Actionable Next Steps).
+
+The genius recommendations will:
+1. Detect anti-patterns automatically
+2. Suggest specific, proven solutions
+3. Recommend tools with justification
+4. Provide learning resources
+5. Offer phase-specific brilliant moves
+6. Calculate concrete benefits (ROI, time saved, performance gains)
+
+Each recommendation includes:
+- ⚠️ Problem identified
+- → Specific solution
+- 💡 Tool/library/pattern name
+- ✨ Expected benefit/result
