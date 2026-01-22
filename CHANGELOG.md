@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.2.0] - 2026-01-22
+
+### Added
+- **Secure Credential Management Commands**
+  - `/store-credential` - Store credentials in system keychain with project isolation
+  - `/get-credential` - Retrieve stored credentials securely
+  - `/list-credentials` - List all stored credentials by scope
+  - `/delete-credential` - Delete credentials with confirmation prompt
+
+### Improved
+- Updated keychain-wrapper.sh with better error handling and fallback encryption
+- Added scripts/credentials directory structure
+- Enhanced plugin.json with proper command registration
+- Multi-OS support: macOS Keychain, Linux Secret Service (with OpenSSL fallback), Windows Credential Manager
+
+### Security
+- AES-256-CBC encryption for fallback storage on Linux
+- Per-project credential isolation (claude-code:project-name:cred-name)
+- Global credential support for cross-project keys
+- Automatic .gitignore protection
+
+### Documentation
+- Added comprehensive credential handling examples
+- Updated README with credential management features
+- Created skill documentation for secure-credential-handling
+
+## [1.0.0] - 2026-01-22
+
+### Initial Release
+- Project indexing for polyglot codebases
+- Phase-based project chunking
+- Session management and resumption
+- Plan mode integration
+- Project evaluation framework
+
+# Changelog
+
 All notable changes to the Project Context Manager plugin will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
