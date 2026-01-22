@@ -1,0 +1,42 @@
+{
+  "name": "qenex-tools",
+  "owner": {
+    "name": "QENEX Infrastructure Team",
+    "email": "ceo@qenex.ai"
+  },
+  "metadata": {
+    "description": "QENEX development tools and utilities for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "project-context-manager",
+      "source": ".",
+      "description": "Track large multi-language projects with secure credential storage, session resumption, phase-based chunking, and plan mode integration",
+      "version": "1.0.0",
+      "author": {
+        "name": "QENEX Infrastructure Team",
+        "email": "ceo@qenex.ai"
+      },
+      "homepage": "https://github.com/qenex-ai/project-context-manager",
+      "repository": "https://github.com/qenex-ai/project-context-manager",
+      "license": "MIT",
+      "keywords": [
+        "project-management",
+        "context",
+        "multi-language",
+        "polyglot",
+        "security",
+        "credentials",
+        "session",
+        "resume",
+        "chunking",
+        "navigation",
+        "plan-mode",
+        "git",
+        "repository"
+      ],
+      "category": "productivity"
+    }
+  ]
+}
